@@ -20,9 +20,11 @@ def read_post_info(file_path):
 # Function to check visibility of a post for a user
 def check_visibility(user_info, post_info, post_id, username):
     for post in post_info:
+        # Check if the post ID matches and the post is public
         if post['post_id'] == post_id:
             if post['visibility'] == 'public':
                 return True
+            # Check if the post is friend-only and the user is authorized
             elif post['visibility'] == 'friend':
                 if post['user_id'] == username:
                     return True
@@ -35,10 +37,12 @@ def check_visibility(user_info, post_info, post_id, username):
 def retrieve_posts(user_info, post_info, username):
     accessible_posts = []
     for post in post_info:
+        # Including user's own posts and public posts
         if post['user_id'] == username:  # Include user's own posts
             accessible_posts.append(post['post_id'])
         elif post['visibility'] == 'public':
             accessible_posts.append(post['post_id'])
+        # Including friend-only posts if user is authorized
         elif post['visibility'] == 'friend' and (username in user_info[post['user_id']]['friends'] or post['user_id'] == username):
             accessible_posts.append(post['post_id'])
     return accessible_posts
@@ -47,6 +51,7 @@ def retrieve_posts(user_info, post_info, username):
 def search_users_by_location(user_info, state):
     users_in_state = []
     for username, info in user_info.items():
+        # Searching for users in the specified state
         if info['state'] == state:
             users_in_state.append(info['display_name'])
     return users_in_state
@@ -69,6 +74,7 @@ def main():
         choice = input("Enter your choice: ")
 
         if choice == '1':
+            # Load user and post information from files
             user_info = read_user_info(user_info_file)
             post_info = read_post_info(post_info_file)
             print("Data loaded successfully.")
@@ -77,6 +83,7 @@ def main():
             if not user_info or not post_info:
                 print("Please load input data first.")
                 continue
+            # Check the visibility of a post for a user
             post_id = input("Enter the post ID: ")
             username = input("Enter the username: ")
             if check_visibility(user_info, post_info, post_id, username):
@@ -88,6 +95,7 @@ def main():
             if not user_info or not post_info:
                 print("Please load input data first.")
                 continue
+            # Retrieve the posts accessible to a user
             username = input("Enter the username: ")
             accessible_posts = retrieve_posts(user_info, post_info, username)
             print("Accessible posts:", accessible_posts)
@@ -96,6 +104,7 @@ def main():
             if not user_info:
                 print("Please load input data first.")
                 continue
+            # Searching users by location
             state = input("Enter the state location: ")
             users_in_state = search_users_by_location(user_info, state)
             print("Users in state", state, ":", ', '.join(users_in_state))
