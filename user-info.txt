@@ -1,3 +1,0 @@
-goldenlover1;Jane Doe;CA;[petpal4ever,whiskerwatcher]
-whiskerwatcher;John Doe;NY;[goldenlover1]
-petpal4ever;Great Name;WV;[goldenlover1]
