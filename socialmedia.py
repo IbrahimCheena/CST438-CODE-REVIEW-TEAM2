@@ -18,49 +18,38 @@ def read_post_info(file_path):
     return post_info
 
 # Function to check visibility of a post for a user
+# Function to check visibility of a post for a user
 def check_visibility(user_info, post_info, post_id, username):
     for post in post_info:
-        # Check if the post ID matches and the post is public
+        # Check if the post ID matches and the user is authorized to view the post
         if post['post_id'] == post_id:
             if post['visibility'] == 'public':
                 return True
-            # Check if the post is private and the user is authorized
-            elif post['visibility'] == 'private':
-                if post['user_id'] == username:
-                    return True
-            # Check if the post is friend-only and the user is authorized
-            elif post['visibility'] == 'friend':
-                if post['user_id'] == username:
-                    return True
-                elif username in user_info[post['user_id']]['friends']:
-                    return True
-            return False
+            elif post['visibility'] == 'private' and post['user_id'] == username:
+                return True
+            elif post['visibility'] == 'friend' and (post['user_id'] == username or username in user_info.get(post['user_id'], {}).get('friends', [])):
+                return True
     return False
+
 
 # Function to retrieve posts accessible to a user
 def retrieve_posts(user_info, post_info, username):
     accessible_posts = []
     for post in post_info:
-        # Including user's own posts, public posts, and private posts if user is authorized
-        if post['user_id'] == username:  # Include user's own posts
+        # Include user's own posts, public posts, and friend-only posts if user is authorized or if user is a friend of the post creator
+        if post['user_id'] == username or post['visibility'] == 'public':
             accessible_posts.append(post['post_id'])
-        elif post['visibility'] == 'public':
-            accessible_posts.append(post['post_id'])
-        elif post['visibility'] == 'private' and post['user_id'] == username:
-            accessible_posts.append(post['post_id'])
-        # Including friend-only posts if user is authorized
-        elif post['visibility'] == 'friend' and (username in user_info[post['user_id']]['friends'] or post['user_id'] == username):
-            accessible_posts.append(post['post_id'])
+        elif post['visibility'] == 'friend':
+            if username in user_info.get(post['user_id'], {}).get('friends', []) or username == post['user_id']:
+                accessible_posts.append(post['post_id'])
     return accessible_posts
+
+
 
 # Function to search users by location
 def search_users_by_location(user_info, state):
-    users_in_state = []
-    for username, info in user_info.items():
-        # Searching for users in the specified state
-        if info['state'] == state:
-            users_in_state.append(info['display_name'])
-    return users_in_state
+    users_in_state = [info['display_name'] for username, info in user_info.items() if info['state'] == state]
+    return users_in_state if users_in_state else ["No user in the state"]
 
 # Main function
 def main():
