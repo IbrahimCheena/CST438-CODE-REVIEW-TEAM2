@@ -24,6 +24,10 @@ def check_visibility(user_info, post_info, post_id, username):
         if post['post_id'] == post_id:
             if post['visibility'] == 'public':
                 return True
+            # Check if the post is private and the user is authorized
+            elif post['visibility'] == 'private':
+                if post['user_id'] == username:
+                    return True
             # Check if the post is friend-only and the user is authorized
             elif post['visibility'] == 'friend':
                 if post['user_id'] == username:
@@ -37,10 +41,12 @@ def check_visibility(user_info, post_info, post_id, username):
 def retrieve_posts(user_info, post_info, username):
     accessible_posts = []
     for post in post_info:
-        # Including user's own posts and public posts
+        # Including user's own posts, public posts, and private posts if user is authorized
         if post['user_id'] == username:  # Include user's own posts
             accessible_posts.append(post['post_id'])
         elif post['visibility'] == 'public':
+            accessible_posts.append(post['post_id'])
+        elif post['visibility'] == 'private' and post['user_id'] == username:
             accessible_posts.append(post['post_id'])
         # Including friend-only posts if user is authorized
         elif post['visibility'] == 'friend' and (username in user_info[post['user_id']]['friends'] or post['user_id'] == username):
