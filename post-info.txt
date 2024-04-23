@@ -1,3 +1,5 @@
 post1112;goldenlover1;friend
 post2123;whiskerwatcher;friend
 post3298;petpal4ever;public
+post3444;cole1dog;private
+post1222;cole1dog;friend
