@@ -2,6 +2,7 @@ use std::{io::{self, BufReader, BufRead}, collections::BTreeSet};
 use std::fs::File;
 
 /// User information structure.
+#[derive(Debug, Clone)]
 pub struct UserInfo {
     /// This value is unique 
     /// Example values: goldenlover1, petpal4ever, whiskerwatcher

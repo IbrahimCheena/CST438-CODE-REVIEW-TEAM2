@@ -3,6 +3,8 @@ use std::io;
 use post::PostInfo;
 use user::UserInfo;
 
+use crate::post::Visibility;
+
 pub mod post;
 pub mod user;
 
@@ -35,11 +37,13 @@ fn main() {
                 io::stdin()
                     .read_line(&mut users_file_path)
                     .expect("Failed to read line");
+                users_file_path = users_file_path.trim().to_string();
                 println!("Enter posts file: ");
                 io::stdin()
                     .read_line(&mut posts_file_path)
                     .expect("Failed to read line");
-                
+                posts_file_path = posts_file_path.trim().to_string();
+
                 // Loads the contents of users and posts.
                 users = user::read_user_info(&users_file_path)
                     .expect("Failed to parse users information!");
@@ -59,6 +63,9 @@ fn main() {
                     .read_line(&mut input)
                     .expect("Failed to read line");
                 let username = input.trim();
+                // Find the post you are asking about.
+                let post = posts.iter().find(|&p| p.postid == post_id.to_string());
+                // TODO check post permissions.
             }
             Ok(3) => {
                 let mut input = String::new();
@@ -67,6 +74,7 @@ fn main() {
                     .read_line(&mut input)
                     .expect("Failed to read line");
                 let username = input.trim();
+                // TODO get posts for a user.
             }
             Ok(4) => {
                 let mut input = String::new();
@@ -74,7 +82,9 @@ fn main() {
                 io::stdin()
                     .read_line(&mut input)
                     .expect("Failed to read line");
-                let location = input.trim();
+                let location = input.trim().to_string()
+                let result = users.iter().filter(|user| user.state == location).collect::<Vec<&UserInfo>>();
+                println!("Results: {:#X?}", result);
             }
             Ok(5) => {
                 println!("Exiting program...");

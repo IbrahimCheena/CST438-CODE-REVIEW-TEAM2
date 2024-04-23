@@ -2,6 +2,7 @@ use std::{io::{self, BufReader, BufRead}, collections::BTreeSet};
 use std::fs::File;
 
 /// Visbility of a post.
+#[derive(Debug, Clone, PartialEq)]
 pub enum Visibility {
     /// Everyone can see it.
     Public,
