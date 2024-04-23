@@ -1,5 +1,5 @@
-use std::{io::{self, BufReader, BufRead}, collections::BTreeSet};
 use std::fs::File;
+use std::io::{BufRead, BufReader};
 
 /// Visbility of a post.
 #[derive(Debug, Clone, PartialEq)]
@@ -7,7 +7,7 @@ pub enum Visibility {
     /// Everyone can see it.
     Public,
     /// Just friends can see it.
-    Friend
+    Friend,
 }
 impl Visibility {
     // Make enum from string.
@@ -20,14 +20,15 @@ impl Visibility {
     }
 }
 /// Post information structure
+#[derive(Debug, Clone)]
 pub struct PostInfo {
     /// unique ID of the post
     pub postid: String,
-    /// unique ID of the user 
+    /// unique ID of the user
     /// Example values: petpal4ever, goldenlover1, whiskerwatcher
     pub userid: String,
     /// Visibility of the post.
-    pub visibility: Visibility 
+    pub visibility: Visibility,
 }
 /// Read the contents of a post info file.
 pub fn read_post_info(file_path: &str) -> Result<Vec<PostInfo>, std::io::Error> {

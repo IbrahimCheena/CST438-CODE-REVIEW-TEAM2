@@ -43,7 +43,6 @@ fn main() {
                     .read_line(&mut posts_file_path)
                     .expect("Failed to read line");
                 posts_file_path = posts_file_path.trim().to_string();
-
                 // Loads the contents of users and posts.
                 users = user::read_user_info(&users_file_path)
                     .expect("Failed to parse users information!");
@@ -62,10 +61,29 @@ fn main() {
                 io::stdin()
                     .read_line(&mut input)
                     .expect("Failed to read line");
-                let username = input.trim();
+                let username = input.trim().to_string();
                 // Find the post you are asking about.
-                let post = posts.iter().find(|&p| p.postid == post_id.to_string());
-                // TODO check post permissions.
+                match posts.iter().find(|&p| p.postid == post_id.to_string()) {
+                    Some(p) => {
+                        // if its public just short circuit.
+                        if p.visibility == Visibility::Public {
+                            println!("Access Granted!");
+                        } else {
+                            // else find the poster.
+                            let owner = users
+                                .iter()
+                                .find(|user| user.username == p.userid)
+                                .expect("Failed to find poster!");
+                            // See if username is in friends list.
+                            if owner.friends.contains(&username) {
+                                println!("Access Granted!");
+                            } else {
+                                println!("Access Denied!");
+                            }
+                        }
+                    }
+                    None => println!("Invalid post id!"),
+                }
             }
             Ok(3) => {
                 let mut input = String::new();
@@ -73,8 +91,15 @@ fn main() {
                 io::stdin()
                     .read_line(&mut input)
                     .expect("Failed to read line");
-                let username = input.trim();
-                // TODO get posts for a user.
+                let username = input.trim().to_string();
+                // Find all posts of a user.
+                println!(
+                    "Results: {:#X?}",
+                    posts
+                        .iter()
+                        .filter(|p| p.userid == username)
+                        .collect::<Vec<&PostInfo>>()
+                );
             }
             Ok(4) => {
                 let mut input = String::new();
@@ -82,9 +107,15 @@ fn main() {
                 io::stdin()
                     .read_line(&mut input)
                     .expect("Failed to read line");
-                let location = input.trim().to_string()
-                let result = users.iter().filter(|user| user.state == location).collect::<Vec<&UserInfo>>();
-                println!("Results: {:#X?}", result);
+                let location = input.trim().to_string();
+                // Find all users at a location.
+                println!(
+                    "Results: {:#X?}",
+                    users
+                        .iter()
+                        .filter(|user| user.state == location)
+                        .collect::<Vec<&UserInfo>>()
+                );
             }
             Ok(5) => {
                 println!("Exiting program...");

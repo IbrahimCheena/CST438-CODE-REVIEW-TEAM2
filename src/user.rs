@@ -1,10 +1,13 @@
-use std::{io::{self, BufReader, BufRead}, collections::BTreeSet};
 use std::fs::File;
+use std::{
+    collections::BTreeSet,
+    io::{BufRead, BufReader},
+};
 
 /// User information structure.
 #[derive(Debug, Clone)]
 pub struct UserInfo {
-    /// This value is unique 
+    /// This value is unique
     /// Example values: goldenlover1, petpal4ever, whiskerwatcher
     pub username: String,
     /// Example values: John Doe, Jane Doe.
@@ -12,7 +15,7 @@ pub struct UserInfo {
     /// Example values: CA, NY, WV.
     pub state: String,
     /// Unique set of usernames
-    pub friends: BTreeSet<String>
+    pub friends: BTreeSet<String>,
 }
 
 /// Read user information file into a vector of UserInfo structures.
@@ -31,7 +34,9 @@ pub fn read_user_info(file_path: &str) -> Result<Vec<UserInfo>, std::io::Error> 
                 let display_name = parts[1].to_string();
                 let state = parts[2].to_string();
                 // Code stink but this parses all elements within the brackets.
-                let friends = parts[3].trim_matches(|c| c == '[' || c == ']').trim()
+                let friends = parts[3]
+                    .trim_matches(|c| c == '[' || c == ']')
+                    .trim()
                     .split(',')
                     .map(|friend| friend.trim().to_string())
                     .collect();
