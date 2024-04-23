@@ -1,0 +1,3 @@
+post1112;goldenlover1;friend
+post2123;whiskerwatcher;friend
+post3298;petpal4ever;public
